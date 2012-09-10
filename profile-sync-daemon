@@ -68,6 +68,12 @@ sync() {
 			if [[ -d $DIR ]]; then
 				[[ -r "$VOLATILE/$user-$browser" ]] || su -c "install -dm755 '$VOLATILE/$user-$browser'" $user
 
+				# recover
+				if [[ $(readlink "$DIR") == "" ]] && [[ -f "$BACKUP" ]] then
+					rm "$DIR"
+					mv "$BACKUP" "$DIR"
+				fi
+
 				# backup target and link to tmpfs container
 				if [[ $(readlink "$DIR") != "$VOLATILE/$user-$browser" ]]; then
 					mv "$DIR" "$BACKUP"
